@@ -1,0 +1,69 @@
+module wallace_tree_multiplier(a,b,prod);
+    input [3:0] a,b;
+    output [7:0] prod;
+    
+    wire [3:0] pp1,pp2,pp3,pp4;
+    wire [12:1] c;
+    wire [12:1] s;
+    
+    assign pp1[0] = a[0]&b[0];
+    assign pp1[1] = a[0]&b[1];
+    assign pp1[2] = a[0]&b[2];
+    assign pp1[3] = a[0]&b[3];
+    
+    assign pp2[0] = a[1]&b[0];
+    assign pp2[1] = a[1]&b[1];
+    assign pp2[2] = a[1]&b[2];
+    assign pp2[3] = a[1]&b[3];
+    
+    assign pp3[0] = a[2]&b[0];
+    assign pp3[1] = a[2]&b[1];
+    assign pp3[2] = a[2]&b[2];
+    assign pp3[3] = a[2]&b[3];
+    
+    assign pp4[0] = a[3]&b[0];
+    assign pp4[1] = a[3]&b[1];
+    assign pp4[2] = a[3]&b[2];
+    assign pp4[3] = a[3]&b[3];
+    
+    HA g0(.a(pp3[2]), .b(pp4[1]), .sum(s[2]), .cout(c[2]));
+    HA g1(.a(pp3[1]), .b(pp4[0]), .sum(s[1]), .cout(c[1]));
+    FA g2(.a(c[2]), .b(pp3[3]), .cin(pp4[2]), .sum(s[6]), .cout(c[6]));
+    FA g3(.a(c[1]), .b(s[2]), .cin(pp4[2]), .sum(s[5]), .cout(c[5]));
+    FA g4(.a(s[1]), .b(pp1[3]), .cin(pp2[2]), .sum(s[4]), .cout(c[4]));
+    HA g5(.a(pp2[1]), .b(pp3[0]), .sum(s[3]), .cout(c[3]));
+    HA g6(.a(pp1[1]), .b(pp2[0]), .sum(s[7]), .cout(c[7]));
+    FA g7(.a(s[3]), .b(pp1[2]), .cin(c[7]), .sum(s[8]), .cout(c[8]));
+    FA g8(.a(c[3]), .b(s[4]), .cin(c[8]), .sum(s[9]), .cout(c[9]));
+    FA g9(.a(c[4]), .b(s[5]), .cin(c[9]), .sum(s[10]), .cout(c[10])); 
+    FA g10(.a(c[5]), .b(s[6]), .cin(c[10]), .sum(s[11]), .cout(c[11]));
+    FA g11(.a(c[6]), .b(pp4[3]), .cin(c[11]), .sum(s[12]), .cout(c[12]));
+    
+    assign prod[7] = c[12];
+    assign prod[6] = s[12];
+    assign prod[5] = s[11];
+    assign prod[4] = s[10];
+    assign prod[3] = s[9];
+    assign prod[2] = s[8]; 
+    assign prod[1] = s[7];
+    assign prod[0] = pp1[0];    
+    
+    
+endmodule
+
+
+module HA(a,b,sum,cout);
+    input a,b;
+    output sum,cout;
+    
+    assign sum = a^b;
+    assign cout = a&b;
+endmodule
+
+module FA(a,b,cin,sum,cout);
+    input a,b,cin;
+    output sum,cout;
+    
+    assign sum = a^b^cin;
+    assign cout = ((a^b)&cin) | (a&b);
+endmodule
