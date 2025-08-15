@@ -6,13 +6,12 @@ module booths_multiplier(q,m,prod);
     reg signed [2*(bit_width) : 0] res;
     wire [bit_width-1 : 0] ac = {bit_width{1'b0}};
     wire q_ext = 1'b0;
-    reg signed [bit_width-1 : 0] mbar;
+    wire signed [bit_width-1 : 0] mbar =~(m) + 1'b1;
     
     integer i;
     
     always @(*)
         begin
-            mbar =~(m) + 1'b1;
             res = {ac,q,q_ext};
             for (i=0;i<bit_width;i=i+1)
                 begin
