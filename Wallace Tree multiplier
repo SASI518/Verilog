@@ -5,26 +5,32 @@ module wallace_tree_multiplier(a,b,prod);
     wire [3:0] pp1,pp2,pp3,pp4;
     wire [12:1] c;
     wire [12:1] s;
-    
+
+// partial products of a[0]
     assign pp1[0] = a[0]&b[0];
     assign pp1[1] = a[0]&b[1];
     assign pp1[2] = a[0]&b[2];
     assign pp1[3] = a[0]&b[3];
-    
+
+// partial products of a[1]
     assign pp2[0] = a[1]&b[0];
     assign pp2[1] = a[1]&b[1];
     assign pp2[2] = a[1]&b[2];
     assign pp2[3] = a[1]&b[3];
-    
+
+// partial products of a[2]    
     assign pp3[0] = a[2]&b[0];
     assign pp3[1] = a[2]&b[1];
     assign pp3[2] = a[2]&b[2];
     assign pp3[3] = a[2]&b[3];
-    
+
+// partial products of a[3]    
     assign pp4[0] = a[3]&b[0];
     assign pp4[1] = a[3]&b[1];
     assign pp4[2] = a[3]&b[2];
     assign pp4[3] = a[3]&b[3];
+
+//Instantiating the Half adder and full adder
     
     HA g0(.a(pp3[2]), .b(pp4[1]), .sum(s[2]), .cout(c[2]));
     HA g1(.a(pp3[1]), .b(pp4[0]), .sum(s[1]), .cout(c[1]));
