@@ -17,17 +17,17 @@ module booths_multiplier(q,m,prod);
                 begin
                     case({res[1],res[0]})
                         2'b01 : begin
-                                    res[2*bit_width:bit_width+1] = res[2*bit_width:bit_width+1] + {{bit_width{m[bit_width-1]}}, m}; //performs the addition and also makes sure that the sign bit is not getting truncated
+                                    res[2*bit_width:bit_width+1] = res[2*bit_width:bit_width+1] + {{bit_width{m[bit_width-1]}}, m}; //performs the addition and also makes sure that the sign bit is not getting truncated by doing sign extension
                                     res = res >>> 1; // arithmetic right shift by 1 bit
                                 end
                         2'b10 : begin
-                                    res[2*bit_width:bit_width+1] = res[2*bit_width:bit_width+1] + {{bit_width{m[bit_width-1]}}, mbar}; //performs the addition and also makes sure that the sign bit is not getting truncated
+                                    res[2*bit_width:bit_width+1] = res[2*bit_width:bit_width+1] + {{bit_width{m[bit_width-1]}}, mbar}; //performs the addition and also makes sure that the sign bit is not getting truncated by doing sign extension
                                     res = res >>> 1; // arithmetic right shift by 1 bit
                                 end
                         default : res = res >>> 1;
                      endcase
                  end
-                 prod = res[2*bit_width:1];
+                 prod = res[2*bit_width:1]; //assigning the final product to the temporary result
          end
                     
             
