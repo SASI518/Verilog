@@ -1,11 +1,11 @@
 module booths_multiplier(q,m,prod);
     parameter bit_width = 8; //bit width is generalized
-    input signed [bit_width-1 : 0] q,m;
-    output  reg signed [2*(bit_width)-1 : 0] prod;
+    input signed [bit_width-1 : 0] q,m; //multiplicand and multiplier (signed)
+    output  reg signed [2*(bit_width)-1 : 0] prod; //product (signed)
     
-    reg signed [2*(bit_width) : 0] res;
-    wire [bit_width-1 : 0] ac = {bit_width{1'b0}};
-    wire q_ext = 1'b0;
+    reg signed [2*(bit_width) : 0] res; //temporary result (signed)
+    wire [bit_width-1 : 0] ac = {bit_width{1'b0}}; //accumulator
+    wire q_ext = 1'b0; //extra bit
     wire signed [bit_width-1 : 0] mbar =~(m) + 1'b1; // performs the 2's complement
     
     integer i;
@@ -16,15 +16,14 @@ module booths_multiplier(q,m,prod);
             for (i=0;i<bit_width;i=i+1) //performs iterations
                 begin
                     case({res[1],res[0]})
-                        2'b01 : begin
-                                    res[2*bit_width:bit_width+1] = res[2*bit_width:bit_width+1] + {{bit_width{m[bit_width-1]}}, m}; //performs the addition and also makes sure that the sign bit is not getting truncated by doing sign extension
+                        2'b01 : begin // if 01, it adds multiplier with sign extension to the accumulator and followed by arithmetic right shift
+                                    res[2*bit_width:bit_width+1] = res[2*bit_width:bit_width+1] + {{bit_width{m[bit_width-1]}}, m}; 
                                     res = res >>> 1; // arithmetic right shift by 1 bit
                                 end
-                        2'b10 : begin
-                                    res[2*bit_width:bit_width+1] = res[2*bit_width:bit_width+1] + {{bit_width{m[bit_width-1]}}, mbar}; //performs the addition and also makes sure that the sign bit is not getting truncated by doing sign extension
-                                    res = res >>> 1; // arithmetic right shift by 1 bit
+                        2'b10 : begin // if 10, it adds 2's complement of multiplier with sign extension to the accumulator and followed by arithmetic right shift
+                                    res[2*bit_width:bit_width+1] = res[2*bit_width:bit_width+1] + {{bit_width{m[bit_width-1]}}, mbar};
                                 end
-                        default : res = res >>> 1;
+                        default : res = res >>> 1; // if 00 or 11, it performs arithmetic right shift
                      endcase
                  end
                  prod = res[2*bit_width:1]; //assigning the final product to the temporary result
