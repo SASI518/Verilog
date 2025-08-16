@@ -13,7 +13,7 @@ module booths_multiplier(q,m,prod);
     always @(*)
         begin
             res = {ac,q,q_ext}; //Initialization
-            for (i=0;i<bit_width;i=i+1)
+            for (i=0;i<bit_width;i=i+1) //performs iterations
                 begin
                     case({res[1],res[0]})
                         2'b01 : begin
