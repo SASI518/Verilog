@@ -26,7 +26,7 @@ module booths_multiplier(q,m,prod);
                         default : res = res >>> 1; // if 00 or 11, it performs arithmetic right shift
                      endcase
                  end
-                 prod = res[2*bit_width:1]; //assigning the final product to the temporary result
+                 prod = res[2*bit_width:1]; //assigning the final product to the temporary result except the last bit
          end
                     
             
