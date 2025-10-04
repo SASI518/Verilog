@@ -1,0 +1,55 @@
+module FA(a,b,cin,s,cout);
+    input a,b,cin;
+    output s,cout;
+    
+    assign s = a^b^cin;
+    assign cout = ((a^b)&cin)|(a&b);
+endmodule
+
+module WC(a,b,cin,s_p,s,cout);
+    input a,b,cin,s_p;
+    output s,cout;
+    
+    assign s = (a&b)^s_p^cin;
+    assign cout = (((a&b)|s_p)&cin) | ((a&b)&s_p);
+endmodule
+
+module GC(a,b,cin,s_p,s,cout);
+    input a,b,cin,s_p;
+    output s,cout;
+ 
+    assign s = (~(a&b))^s_p^cin;
+    assign cout = ((~(a&b)|s_p)&cin) | (~(a&b)&s_p);
+endmodule
+
+
+module baugh_wooley(a,b,p);
+    input [3:0] a,b;
+    output [7:0] p;
+    
+    wire [14:0] s;
+    wire [19:0] cout;
+    
+    WC i0(.a(a[0]), .b(b[0]), .cin(1'b0), .s_p(1'b0), .s(p[0]), .cout(cout[0]));
+    WC i1(.a(a[1]), .b(b[0]), .cin(1'b0), .s_p(1'b0), .s(s[0]), .cout(cout[1]));
+    WC i2(.a(a[2]), .b(b[0]), .cin(1'b0), .s_p(1'b0), .s(s[1]), .cout(cout[2]));
+    GC i3(.a(a[3]), .b(b[0]), .cin(1'b0), .s_p(1'b0), .s(s[2]), .cout(cout[3]));
+    WC i4(.a(a[0]), .b(b[1]), .cin(cout[0]), .s_p(s[0]), .s(p[1]), .cout(cout[4]));
+    WC i5(.a(a[1]), .b(b[1]), .cin(cout[1]), .s_p(s[1]), .s(s[3]), .cout(cout[5]));
+    WC i6(.a(a[2]), .b(b[1]), .cin(cout[2]), .s_p(s[2]), .s(s[4]), .cout(cout[6]));
+    GC i7(.a(a[3]), .b(b[1]), .cin(cout[3]), .s_p(1'b0), .s(s[5]), .cout(cout[7]));
+    WC i8(.a(a[0]), .b(b[2]), .cin(cout[4]), .s_p(s[3]), .s(p[2]), .cout(cout[8]));
+    WC i9(.a(a[1]), .b(b[2]), .cin(cout[5]), .s_p(s[4]), .s(s[6]), .cout(cout[9]));
+    WC i10(.a(a[2]), .b(b[2]), .cin(cout[6]), .s_p(s[5]), .s(s[7]), .cout(cout[10]));
+    GC i11(.a(a[3]), .b(b[2]), .cin(cout[7]), .s_p(1'b0), .s(s[8]), .cout(cout[11]));
+    GC i12(.a(a[0]), .b(b[3]), .cin(cout[8]), .s_p(s[6]), .s(p[3]), .cout(cout[12]));
+    GC i13(.a(a[1]), .b(b[3]), .cin(cout[9]), .s_p(s[7]), .s(s[10]), .cout(cout[13]));
+    GC i14(.a(a[2]), .b(b[3]), .cin(cout[10]), .s_p(s[8]), .s(s[11]), .cout(cout[14]));
+    WC i15(.a(a[3]), .b(b[3]), .cin(cout[11]), .s_p(1'b0), .s(s[12]), .cout(cout[15]));
+    FA i16(.a(s[10]), .b(1'b1), .cin(cout[12]), .s(p[4]), .cout(cout[16]));
+    FA i17(.a(s[11]), .b(cout[13]), .cin(cout[16]), .s(p[5]), .cout(cout[17]));
+    FA i18(.a(s[12]), .b(cout[14]), .cin(cout[17]), .s(p[6]), .cout(cout[18]));
+    FA i19(.a(1'b1), .b(cout[15]), .cin(cout[18]), .s(p[7]), .cout(cout[19]));
+          
+    
+endmodule
